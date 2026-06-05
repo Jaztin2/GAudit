@@ -6,7 +6,7 @@ export default function SettingsTab({
   setGcash, setSGcash, setCash, setSCash,
   setTiers, setSTiers,
   onSaveBalances, onSaveFeeTiers, onLogout,
-  dark, onToggleDark,
+  dark, onToggleDark, installPrompt, onInstall,
 }) {
   return (
     <div style={{ paddingBottom: 8 }}>
@@ -67,6 +67,11 @@ export default function SettingsTab({
       <div className="settings-group">
         <div className="settings-group-title">Appearance</div>
         <div style={{ padding: '12px 16px 16px' }}>
+          {installPrompt && (
+            <button className="btn btn-blue" onClick={onInstall} style={{ marginBottom: 14 }}>
+              📲 Install GAudit App
+            </button>
+          )}
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <span style={{ fontWeight: 600, fontSize: 15 }}>{dark ? '🌙 Dark Mode' : '☀️ Light Mode'}</span>
             <div onClick={onToggleDark} style={{

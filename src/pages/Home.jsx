@@ -26,6 +26,20 @@ export default function Home() {
   const { currentUser, logout } = useAuth()
   const uid = currentUser.uid
   const [dark, toggleDark] = useTheme()
+  const [installPrompt, setInstallPrompt] = useState(null)
+
+  useEffect(() => {
+    const handler = e => { e.preventDefault(); setInstallPrompt(e) }
+    window.addEventListener('beforeinstallprompt', handler)
+    return () => window.removeEventListener('beforeinstallprompt', handler)
+  }, [])
+
+  async function handleInstall() {
+    if (!installPrompt) return
+    installPrompt.prompt()
+    const { outcome } = await installPrompt.userChoice
+    if (outcome === 'accepted') setInstallPrompt(null)
+  }
 
   // ── Data state ─────────────────────────────────────────────
   const [profile,    setProfile]    = useState(null)
@@ -214,9 +228,16 @@ export default function Home() {
           <div className="app-logo">GA<span>udit</span> 💸</div>
           <div className="app-sub">Hi, {(currentUser.displayName || currentUser.email).split(/[\s@]/)[0]} 👋</div>
         </div>
-        <button onClick={toggleDark} style={{ background: 'rgba(255,255,255,0.15)', border: 'none', borderRadius: 10, padding: '7px 10px', cursor: 'pointer', fontSize: 18, lineHeight: 1 }}>
-          {dark ? '☀️' : '🌙'}
-        </button>
+        <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+          {installPrompt && (
+            <button onClick={handleInstall} style={{ background: 'rgba(255,255,255,0.15)', border: 'none', borderRadius: 10, padding: '7px 10px', cursor: 'pointer', fontSize: 18, lineHeight: 1 }} title="Install App">
+              📲
+            </button>
+          )}
+          <button onClick={toggleDark} style={{ background: 'rgba(255,255,255,0.15)', border: 'none', borderRadius: 10, padding: '7px 10px', cursor: 'pointer', fontSize: 18, lineHeight: 1 }}>
+            {dark ? '☀️' : '🌙'}
+          </button>
+        </div>
       </div>
 
       {/* Tab Content */}
@@ -241,6 +262,7 @@ export default function Home() {
             setTiers={sTiers} setSTiers={setSTiers}
             onSaveBalances={handleSaveBalances} onSaveFeeTiers={handleSaveFeeTiers} onLogout={logout}
             dark={dark} onToggleDark={toggleDark}
+            installPrompt={installPrompt} onInstall={handleInstall}
           />
         )}
       </div>
