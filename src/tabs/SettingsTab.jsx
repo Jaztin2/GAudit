@@ -6,6 +6,7 @@ export default function SettingsTab({
   setGcash, setSGcash, setCash, setSCash,
   setTiers, setSTiers,
   onSaveBalances, onSaveFeeTiers, onLogout,
+  dark, onToggleDark,
 }) {
   return (
     <div style={{ paddingBottom: 8 }}>
@@ -58,6 +59,26 @@ export default function SettingsTab({
           <div style={{ display:'flex', gap:8 }}>
             <button className="btn btn-gray" style={{ flex:1 }} onClick={() => setSTiers(DEFAULT_FEE_TIERS.map(t=>({...t})))}>Reset</button>
             <button className="btn btn-blue" style={{ flex:2 }} onClick={onSaveFeeTiers}>Save Tiers</button>
+          </div>
+        </div>
+      </div>
+
+      {/* Appearance */}
+      <div className="settings-group">
+        <div className="settings-group-title">Appearance</div>
+        <div style={{ padding: '12px 16px 16px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <span style={{ fontWeight: 600, fontSize: 15 }}>{dark ? '🌙 Dark Mode' : '☀️ Light Mode'}</span>
+            <div onClick={onToggleDark} style={{
+              width: 50, height: 28, borderRadius: 14, cursor: 'pointer', position: 'relative',
+              background: dark ? 'var(--blue)' : 'var(--border)', transition: 'background 0.2s',
+            }}>
+              <div style={{
+                position: 'absolute', top: 3, left: dark ? 25 : 3,
+                width: 22, height: 22, borderRadius: '50%', background: 'white',
+                transition: 'left 0.2s', boxShadow: '0 1px 4px rgba(0,0,0,0.25)',
+              }} />
+            </div>
           </div>
         </div>
       </div>

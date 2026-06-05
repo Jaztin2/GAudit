@@ -9,8 +9,8 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['icon.svg'],
       manifest: {
-        name: 'gaudit',
-        short_name: 'gaudit',
+        name: 'GAudit 💸',
+        short_name: 'GAudit',
         description: 'GCash Business Tracker — know your profit.',
         theme_color: '#0066CC',
         background_color: '#0066CC',

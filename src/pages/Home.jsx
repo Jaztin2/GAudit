@@ -13,6 +13,7 @@ import CustomersTab from '../tabs/CustomersTab'
 import SettingsTab  from '../tabs/SettingsTab'
 import { DEFAULT_FEE_TIERS } from '../utils/fees'
 import { peso } from '../utils/format'
+import { useTheme } from '../hooks/useTheme'
 
 const NAV = [
   { id: 'home',      ico: '🏠', label: 'Home'      },
@@ -24,6 +25,7 @@ const NAV = [
 export default function Home() {
   const { currentUser, logout } = useAuth()
   const uid = currentUser.uid
+  const [dark, toggleDark] = useTheme()
 
   // ── Data state ─────────────────────────────────────────────
   const [profile,    setProfile]    = useState(null)
@@ -209,9 +211,12 @@ export default function Home() {
       {/* Header */}
       <div className="app-header">
         <div>
-          <div className="app-logo">g<span>audit</span></div>
+          <div className="app-logo">GA<span>udit</span> 💸</div>
           <div className="app-sub">Hi, {(currentUser.displayName || currentUser.email).split(/[\s@]/)[0]} 👋</div>
         </div>
+        <button onClick={toggleDark} style={{ background: 'rgba(255,255,255,0.15)', border: 'none', borderRadius: 10, padding: '7px 10px', cursor: 'pointer', fontSize: 18, lineHeight: 1 }}>
+          {dark ? '☀️' : '🌙'}
+        </button>
       </div>
 
       {/* Tab Content */}
@@ -235,6 +240,7 @@ export default function Home() {
             setGcash={sGcash} setSGcash={setSGcash} setCash={sCash} setSCash={setSCash}
             setTiers={sTiers} setSTiers={setSTiers}
             onSaveBalances={handleSaveBalances} onSaveFeeTiers={handleSaveFeeTiers} onLogout={logout}
+            dark={dark} onToggleDark={toggleDark}
           />
         )}
       </div>
