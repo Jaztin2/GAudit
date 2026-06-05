@@ -1,4 +1,6 @@
 import { useState } from 'react'
+import { setPersistence, browserLocalPersistence, browserSessionPersistence } from 'firebase/auth'
+import { auth } from '../firebase'
 import { useAuth } from '../contexts/AuthContext'
 
 const ERR_MAP = {
@@ -13,20 +15,23 @@ const ERR_MAP = {
 
 export default function Login() {
   const { signInWithGoogle, signInEmail, registerEmail } = useAuth()
-  const [tab, setTab]           = useState('login')
-  const [email, setEmail]       = useState('')
-  const [password, setPassword] = useState('')
-  const [name, setName]         = useState('')
-  const [error, setError]       = useState('')
-  const [busy, setBusy]         = useState(false)
-  const [showPw, setShowPw]     = useState(false)
+  const [tab,        setTab]        = useState('login')
+  const [email,      setEmail]      = useState('')
+  const [password,   setPassword]   = useState('')
+  const [name,       setName]       = useState('')
+  const [remember,   setRemember]   = useState(true)
+  const [error,      setError]      = useState('')
+  const [busy,       setBusy]       = useState(false)
+  const [showPw,     setShowPw]     = useState(false)
 
   function fmtError(code) { return ERR_MAP[code] ?? 'Something went wrong. Try again.' }
 
   async function handleGoogle() {
     setError(''); setBusy(true)
-    try { await signInWithGoogle() }
-    catch (e) { const m = fmtError(e.code); if (m) setError(m) }
+    try {
+      await setPersistence(auth, remember ? browserLocalPersistence : browserSessionPersistence)
+      await signInWithGoogle()
+    } catch (e) { const m = fmtError(e.code); if (m) setError(m) }
     finally { setBusy(false) }
   }
 
@@ -34,6 +39,7 @@ export default function Login() {
     e.preventDefault()
     setError(''); setBusy(true)
     try {
+      await setPersistence(auth, remember ? browserLocalPersistence : browserSessionPersistence)
       if (tab === 'login') {
         await signInEmail(email, password)
       } else {
@@ -47,7 +53,7 @@ export default function Login() {
   return (
     <div className="auth-wrap">
       <div className="auth-hero">
-        <h1>g<span>audit</span></h1>
+        <h1>GA<span>udit</span> 💸</h1>
         <p>GCash Business Tracker — know your profit.</p>
       </div>
 
@@ -101,7 +107,25 @@ export default function Login() {
               </button>
             </div>
           </div>
-          <button className="btn btn-blue mt8" type="submit" disabled={busy}>
+
+          {/* Remember Me */}
+          <label style={{ display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer', marginBottom: 16, userSelect: 'none' }}>
+            <div
+              onClick={() => setRemember(v => !v)}
+              style={{
+                width: 20, height: 20, borderRadius: 6, flexShrink: 0,
+                border: `2px solid ${remember ? 'var(--blue)' : 'var(--border)'}`,
+                background: remember ? 'var(--blue)' : 'transparent',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                transition: 'all 0.15s',
+              }}
+            >
+              {remember && <span style={{ color: 'white', fontSize: 13, lineHeight: 1, fontWeight: 800 }}>✓</span>}
+            </div>
+            <span style={{ fontSize: 14, color: 'var(--gray)', fontWeight: 500 }}>Remember me on this device</span>
+          </label>
+
+          <button className="btn btn-blue" type="submit" disabled={busy}>
             {busy ? 'Please wait…' : tab === 'login' ? 'Log In' : 'Create Account'}
           </button>
         </form>
