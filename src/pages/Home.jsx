@@ -227,7 +227,7 @@ export default function Home() {
           <LogsTab txs={txs} onOpenDetail={setDetailTx} onClearAll={handleClearLogs} />
         )}
         {activeTab === 'customers' && (
-          <CustomersTab customers={customers} txs={txs} onDelete={handleDeleteCustomer} />
+          <CustomersTab customers={customers} txs={txs} onDelete={handleDeleteCustomer} onOpenDetail={setDetailTx} />
         )}
         {activeTab === 'settings' && (
           <SettingsTab
