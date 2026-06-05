@@ -1,6 +1,9 @@
 import { DEFAULT_FEE_TIERS } from '../utils/fees'
 import { peso } from '../utils/format'
 
+const isIOS = () => /iphone|ipad|ipod/i.test(navigator.userAgent)
+const isInstalled = () => window.matchMedia('(display-mode: standalone)').matches || navigator.standalone
+
 export default function SettingsTab({
   profile, txCount, totalProfit, currentUser,
   setGcash, setSGcash, setCash, setSCash,
@@ -63,15 +66,42 @@ export default function SettingsTab({
         </div>
       </div>
 
+      {/* Install App */}
+      {!isInstalled() && (
+        <div className="settings-group">
+          <div className="settings-group-title">Install App</div>
+          <div style={{ padding: '12px 16px 16px' }}>
+            {installPrompt ? (
+              <button className="btn btn-blue" onClick={onInstall}>📲 Install GAudit App</button>
+            ) : (
+              <div style={{ fontSize: 14, lineHeight: 1.8, color: 'var(--gray)' }}>
+                {isIOS() ? (
+                  <>
+                    <div style={{ fontWeight: 700, color: 'var(--dark)', marginBottom: 8 }}>iPhone / iPad</div>
+                    <div>1. Open <strong>https://gaudit-e5fbd.web.app</strong> in <strong>Safari</strong></div>
+                    <div>2. Tap the <strong>Share button</strong> (□↑) at the bottom</div>
+                    <div>3. Tap <strong>"Add to Home Screen"</strong></div>
+                    <div>4. Tap <strong>Add</strong></div>
+                  </>
+                ) : (
+                  <>
+                    <div style={{ fontWeight: 700, color: 'var(--dark)', marginBottom: 8 }}>Android</div>
+                    <div>1. Open <strong>https://gaudit-e5fbd.web.app</strong> in <strong>Chrome</strong></div>
+                    <div>2. Tap the <strong>3-dot menu ⋮</strong> (top right)</div>
+                    <div>3. Tap <strong>"Add to Home screen"</strong> or <strong>"Install app"</strong></div>
+                    <div>4. Tap <strong>Install</strong></div>
+                  </>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
       {/* Appearance */}
       <div className="settings-group">
         <div className="settings-group-title">Appearance</div>
         <div style={{ padding: '12px 16px 16px' }}>
-          {installPrompt && (
-            <button className="btn btn-blue" onClick={onInstall} style={{ marginBottom: 14 }}>
-              📲 Install GAudit App
-            </button>
-          )}
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <span style={{ fontWeight: 600, fontSize: 15 }}>{dark ? '🌙 Dark Mode' : '☀️ Light Mode'}</span>
             <div onClick={onToggleDark} style={{
